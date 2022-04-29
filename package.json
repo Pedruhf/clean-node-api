@@ -10,6 +10,6 @@
     "typescript": "^4.6.4"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --watch --passWithNoTests"
   }
 }
