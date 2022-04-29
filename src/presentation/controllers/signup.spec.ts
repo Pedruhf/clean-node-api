@@ -1,7 +1,7 @@
 import { InvalidParamError, MissingParamError, ServerError } from "../errors";
 import { HttpRequest } from "../protocols/http";
 import { SignUpController } from "./signup";
-import { EmailValidator } from "../protocols/email-validator";
+import { EmailValidator } from "../protocols";
 
 class EmailValidatorStub implements EmailValidator {
   isValid(email: string): boolean {
