@@ -1,3 +1,4 @@
+import { MissingParamError } from "../errors/missing-param-error";
 import { HttpRequest, httpResponse } from "../protocols/http";
 
 
@@ -9,7 +10,7 @@ export class SignUpController {
       if (!httpRequest.body[field]) {
         return {
           statusCode: 400,
-          body: new Error(`Missing param: ${field}`),
+          body: new MissingParamError(field),
         };
       }
     }
