@@ -3,19 +3,33 @@ import { HttpRequest } from "../protocols/http";
 import { SignUpController } from "./signup";
 import { EmailValidator } from "../protocols";
 
-class EmailValidatorStub implements EmailValidator {
-  isValid(email: string): boolean {
-    return true;
-  }
-}
-
 type SutTypes = {
   sut: SignUpController;
-  emailValidatorStub: EmailValidatorStub
+  emailValidatorStub: EmailValidator
+}
+
+const makeEmailValidator = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid(email: string): boolean {
+      return true;
+    }
+  }
+
+  return new EmailValidatorStub();
+}
+
+const makeEmailValidatorWithError = ():EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid(email: string): boolean {
+      throw new Error();
+    }
+  }
+
+  return new EmailValidatorStub();
 }
 
 const makeSut = (): SutTypes => {
-  const emailValidatorStub = new EmailValidatorStub();
+  const emailValidatorStub = makeEmailValidator();
   const sut = new SignUpController(emailValidatorStub);
 
   return {
@@ -118,15 +132,9 @@ describe("SignUp Controller", () => {
 
 
   test("Should return 500 if EmailValidator throws an error", () => {
-    class EmailValidatorStub implements EmailValidator {
-      isValid(email: string): boolean {
-        throw new Error();
-      }
-    }
-    
-    const emailValidatorStub = new EmailValidatorStub();
+    const emailValidatorStub = makeEmailValidatorWithError();
     const sut = new SignUpController(emailValidatorStub);
-
+    
     const httpRequest: HttpRequest = {
       body: {
         name: "any_name",
