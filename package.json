@@ -10,6 +10,10 @@
     "typescript": "^4.6.4"
   },
   "scripts": {
-    "test": "jest --watch --passWithNoTests"
+    "test": "jest --passWithNoTests --runInBand --silent --noStackTrace",
+    "test:verbose": "jest passWithNoTests--",
+    "test:unit": "npm test -- --watch -c jest-unit-config.js",
+    "test:integration": "npm test -- --watch -c jest-integration-config.js",
+    "test:ci": "npm test -- --coverage"
   }
 }
