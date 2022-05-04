@@ -15,7 +15,8 @@ const makeController = (): Controller => {
           name: "another_any_name"
         }
       }
-      return new Promise(resolve => resolve(httpResponse));
+
+      return httpResponse;
     }
   }
 
@@ -49,5 +50,21 @@ describe('LogController Decorator', () => {
 
     await sut.handle(httpRequest);
     expect(handleSpy).toHaveBeenCalledWith(httpRequest);
+  });
+
+  it('Should return the same httpResponse of controller handle', async () => {
+    const { sut, controllerStub } = makeSut();
+    
+    const httpRequest: HttpRequest = {
+      body: {
+        name: "any_name",
+        email: "any_mail@mail.com",
+        password: "any_password",
+        confirmPassword: "any_confirmPassword"
+      }
+    }
+    const httpResponseStub = await controllerStub.handle(httpRequest);
+    const httpResponse = await sut.handle(httpRequest);
+    expect(httpResponse).toEqual(httpResponseStub);
   });
 });
