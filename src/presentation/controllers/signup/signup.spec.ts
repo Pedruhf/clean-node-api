@@ -35,6 +35,15 @@ const makeAddAccount = (): AddAccount => {
   return new AddAccountStub();
 }
 
+const makeFakeRequest = (): HttpRequest => ({
+  body: {
+    name: "any_name",
+    email: "any_email@mail.com",
+    password: "any_password",
+    passwordConfirmation: "any_password",
+  }
+});
+
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator();
   const addAccountStub = makeAddAccount();
@@ -141,14 +150,7 @@ describe("SignUp Controller", () => {
     const { sut, emailValidatorStub } = makeSut();
     const isValidSpy = jest.spyOn(emailValidatorStub, "isValid");
     
-    const httpRequest: HttpRequest = {
-      body: {
-        name: "any_name",
-        email: "any_email@mail.com",
-        password: "any_password",
-        passwordConfirmation: "any_password",
-      }
-    }
+    const httpRequest = makeFakeRequest();
 
     await sut.handle(httpRequest);
     expect(isValidSpy).toHaveBeenCalledWith("any_email@mail.com");
@@ -160,14 +162,7 @@ describe("SignUp Controller", () => {
       throw new Error();
     });
     
-    const httpRequest: HttpRequest = {
-      body: {
-        name: "any_name",
-        email: "any_email@mail.com",
-        password: "any_password",
-        passwordConfirmation: "any_password",
-      }
-    }
+    const httpRequest = makeFakeRequest();
 
     const httpResponse = await sut.handle(httpRequest);
     expect(httpResponse.statusCode).toBe(500);
@@ -180,14 +175,7 @@ describe("SignUp Controller", () => {
       return new Promise((resolve, reject) => reject(new Error()));
     });
     
-    const httpRequest: HttpRequest = {
-      body: {
-        name: "any_name",
-        email: "any_email@mail.com",
-        password: "any_password",
-        passwordConfirmation: "any_password",
-      }
-    }
+    const httpRequest = makeFakeRequest();
 
     const httpResponse = await sut.handle(httpRequest);
     expect(httpResponse.statusCode).toBe(500);
@@ -198,14 +186,7 @@ describe("SignUp Controller", () => {
     const { sut, addAccountStub } = makeSut();
     const addSpy = jest.spyOn(addAccountStub, "add")
     
-    const httpRequest: HttpRequest = {
-      body: {
-        name: "any_name",
-        email: "any_email@mail.com",
-        password: "any_password",
-        passwordConfirmation: "any_password",
-      }
-    }
+    const httpRequest = makeFakeRequest();
 
     await sut.handle(httpRequest);
     expect(addSpy).toHaveBeenCalledWith({

@@ -11,7 +11,16 @@ const makeLogErrorRepository = (): LogErrorRepository => {
   }
 
   return new LogErrorRepositoryStub();
-} 
+}
+
+const makeFakeRequest = (): HttpRequest => ({
+  body: {
+    name: "any_name",
+    email: "any_mail@mail.com",
+    password: "any_password",
+    confirmPassword: "any_confirmPassword"
+  }
+});
 
 const makeController = (): Controller => {
   class ControllerStub implements Controller {
@@ -54,14 +63,7 @@ describe('LogController Decorator', () => {
     const { sut, controllerStub } = makeSut();
     const handleSpy = jest.spyOn(controllerStub, "handle");
 
-    const httpRequest: HttpRequest = {
-      body: {
-        name: "any_name",
-        email: "any_mail@mail.com",
-        password: "any_password",
-        confirmPassword: "any_confirmPassword"
-      }
-    }
+    const httpRequest = makeFakeRequest();
 
     await sut.handle(httpRequest);
     expect(handleSpy).toHaveBeenCalledWith(httpRequest);
@@ -70,14 +72,7 @@ describe('LogController Decorator', () => {
   it('Should return the same httpResponse of controller handle', async () => {
     const { sut, controllerStub } = makeSut();
     
-    const httpRequest: HttpRequest = {
-      body: {
-        name: "any_name",
-        email: "any_mail@mail.com",
-        password: "any_password",
-        confirmPassword: "any_confirmPassword"
-      }
-    }
+    const httpRequest = makeFakeRequest();
     const httpResponseStub = await controllerStub.handle(httpRequest);
     const httpResponse = await sut.handle(httpRequest);
     expect(httpResponse).toEqual(httpResponseStub);
@@ -95,14 +90,7 @@ describe('LogController Decorator', () => {
       new Promise(resolve => resolve(error))
     );
 
-    const httpRequest: HttpRequest = {
-      body: {
-        name: "any_name",
-        email: "any_mail@mail.com",
-        password: "any_password",
-        confirmPassword: "any_confirmPassword"
-      }
-    }
+    const httpRequest = makeFakeRequest();
 
     await sut.handle(httpRequest);
     expect(logSpy).toHaveBeenCalledWith(fakeError.stack);
