@@ -1,6 +1,6 @@
 import { Authentication, EmailValidator, HttpRequest } from "./login-protocols";
 import { InvalidParamError, MissingParamError } from "../../errors";
-import { badRequest, serverError, unauthorized } from "../../helpers/http-helper";
+import { badRequest, ok, serverError, unauthorized } from "../../helpers/http-helper";
 import { LoginController } from "./login";
 
 type SutTypes = {
@@ -161,5 +161,21 @@ describe('Login Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest);
     expect(httpResponse).toEqual(serverError(new Error()));
+  });
+
+  it('Should return an accessToken on success', async () => {
+    const { sut } = makeSut();
+
+    const httpRequest: HttpRequest = {
+      body: {
+        email: "any_mail@mail.com",
+        password: "any_password",
+      },
+    };
+
+    const httpResponse = await sut.handle(httpRequest);
+    expect(httpResponse).toEqual(ok({
+      accessToken: "any_token"
+    }));
   });
 });
