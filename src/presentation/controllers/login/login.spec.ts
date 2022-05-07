@@ -129,7 +129,6 @@ describe('Login Controller', () => {
     expect(authSpy).toHaveBeenCalledWith(httpRequest.body.email, httpRequest.body.password);
   });
 
-  
   it('Should return 401 if invalid credentials are provided', async () => {
     const { sut, authenticationStub } = makeSut();
     jest.spyOn(authenticationStub, "auth").mockReturnValueOnce(
@@ -145,5 +144,22 @@ describe('Login Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest);
     expect(httpResponse).toEqual(unauthorized())
+  });
+
+  it('Should return 500 if Authentication throws', async () => {
+    const { sut, authenticationStub } = makeSut();
+    jest.spyOn(authenticationStub, "auth").mockReturnValueOnce(
+      new Promise((_, reject) => reject(new Error()))
+    );
+
+    const httpRequest: HttpRequest = {
+      body: {
+        email: "any_mail@mail.com",
+        password: "any_password",
+      },
+    };
+
+    const httpResponse = await sut.handle(httpRequest);
+    expect(httpResponse).toEqual(serverError(new Error()));
   });
 });
