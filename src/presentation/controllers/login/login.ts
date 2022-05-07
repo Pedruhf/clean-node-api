@@ -1,5 +1,5 @@
 import { MissingParamError } from "../../errors";
-import { badRequest } from "../../helpers/http-helper";
+import { badRequest, created } from "../../helpers/http-helper";
 import { Controller, HttpRequest, httpResponse } from "../../protocols";
 
 export class LoginController implements Controller {
