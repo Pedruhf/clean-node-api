@@ -4,6 +4,10 @@ import { BcryptAdapter } from "./bcrypt-adapter";
 jest.mock("bcrypt", () => ({
   async hash (): Promise<string> {
     return new Promise(resolve => resolve("hashedValue"));
+  },
+
+  async compare (): Promise<boolean> {
+    return new Promise(resolve => resolve(true));
   }
 }));
 
@@ -36,5 +40,12 @@ describe('BcryptAdapter', () => {
 
     const bcryptPromise = sut.encrypt("any_value");
     await expect(bcryptPromise).rejects.toThrow();
+  });
+
+  it('Should call compare with correct values', async () => {
+    const sut = makeSut();
+    const compareSpy = jest.spyOn(bcrypt, "compare");
+    await sut.compare("any_value", "any_hash");
+    expect(compareSpy).toHaveBeenCalledWith("any_value", "any_hash");
   });
 });
