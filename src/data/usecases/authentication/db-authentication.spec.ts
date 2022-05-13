@@ -1,5 +1,6 @@
 import { AccountModel } from "../../../domain/models/account";
 import { HashComparer } from "../../protocols/criptography/hash-comparer";
+import { TokenGenerator } from "../../protocols/criptography/token-generator";
 import { LoadAccountByEmailRepository } from "../../protocols/db/load-account-by-email-repository";
 import { DbAuthentication } from "./db-authentication";
 
@@ -10,6 +11,16 @@ const makeFakeAccount = (): AccountModel => {
     email: "any_mail@mail.com",
     password: "hashed_password",
   };
+}
+
+const makeTokenGeneratorStub = (): TokenGenerator => {
+  class TokenGeneratorStub implements TokenGenerator {
+    async generate (id: string): Promise<string> {
+      return new Promise(resolve => resolve("any_token"));
+    }
+  }
+
+  return new TokenGeneratorStub();
 }
 
 const makeHashComparerStub = (): HashComparer => {
@@ -37,17 +48,20 @@ type SutTypes = {
   sut: DbAuthentication;
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository;
   hashComparerStub: HashComparer;
+  tokenGeneratorStub: TokenGenerator;
 }
 
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepositoryStub();
   const hashComparerStub = makeHashComparerStub();
-  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub);
+  const tokenGeneratorStub = makeTokenGeneratorStub();
+  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub, tokenGeneratorStub);
 
   return {
     sut,
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
+    tokenGeneratorStub,
   };
 }
 
@@ -128,5 +142,17 @@ describe('DbAuthentication UseCase', () => {
     });
 
     expect(accessToken).toBe(null);
+  });
+
+  it('Should call TokenGenerator with correct id', async () => {
+    const { sut, tokenGeneratorStub } = makeSut();
+    const generateSpy = jest.spyOn(tokenGeneratorStub, "generate");
+
+    await sut.auth({
+      email: "any_mail@mail.com",
+      password: "any_password",
+    });
+
+    expect(generateSpy).toHaveBeenCalledWith("any_id");
   });
 });
