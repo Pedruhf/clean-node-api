@@ -169,4 +169,15 @@ describe('DbAuthentication UseCase', () => {
 
     await expect(promise).rejects.toThrow();
   });
+
+  it('Should return an accessToken on success', async () => {
+    const { sut } = makeSut();
+
+    const accessToken = await sut.auth({
+      email: "any_mail@mail.com",
+      password: "any_password",
+    });
+
+    expect(accessToken).toBe("any_token");
+  });
 });
