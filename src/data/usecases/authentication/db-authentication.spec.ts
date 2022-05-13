@@ -1,4 +1,5 @@
 import { AccountModel } from "../../../domain/models/account";
+import { HashComparer } from "../../protocols/criptography/hash-comparer";
 import { LoadAccountByEmailRepository } from "../../protocols/db/load-account-by-email-repository";
 import { DbAuthentication } from "./db-authentication";
 
@@ -7,8 +8,18 @@ const makeFakeAccount = (): AccountModel => {
     id: "any_id",
     name: "any_name",
     email: "any_mail@mail.com",
-    password: "any_password",
+    password: "hashed_password",
   };
+}
+
+const makeHashComparerStub = (): HashComparer => {
+  class HashComparerStub implements HashComparer {
+    async compare(value: string, hash: string): Promise<boolean> {
+      return new Promise(resolve => resolve(true));
+    }
+  }
+
+  return new HashComparerStub();
 }
 
 const makeLoadAccountByEmailRepositoryStub = (): LoadAccountByEmailRepository => {
@@ -24,17 +35,20 @@ const makeLoadAccountByEmailRepositoryStub = (): LoadAccountByEmailRepository =>
 
 type SutTypes = {
   sut: DbAuthentication;
-  loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
+  loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository;
+  hashComparerStub: HashComparer;
 }
 
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepositoryStub();
-  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub);
+  const hashComparerStub = makeHashComparerStub();
+  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub);
 
   return {
     sut,
-    loadAccountByEmailRepositoryStub
-  }
+    loadAccountByEmailRepositoryStub,
+    hashComparerStub,
+  };
 }
 
 describe('DbAuthentication UseCase', () => {
@@ -74,5 +88,17 @@ describe('DbAuthentication UseCase', () => {
     });
 
     expect(accessToken).toBe(null);
+  });
+
+  it('Should call HashComparer with correct values', async () => {
+    const { sut, hashComparerStub } = makeSut();
+    const compareSpy = jest.spyOn(hashComparerStub, "compare");
+
+    await sut.auth({
+      email: "any_mail@mail.com",
+      password: "any_password",
+    });
+
+    expect(compareSpy).toHaveBeenCalledWith("any_password", "hashed_password");
   });
 });
