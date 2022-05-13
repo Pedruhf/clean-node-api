@@ -101,4 +101,18 @@ describe('DbAuthentication UseCase', () => {
 
     expect(compareSpy).toHaveBeenCalledWith("any_password", "hashed_password");
   });
+
+  it('Should throw if HashComparer throws', async () => {
+    const { sut, hashComparerStub } = makeSut();
+    jest.spyOn(hashComparerStub, "compare").mockReturnValueOnce(
+      new Promise((_, reject) => reject(new Error()))
+    );
+
+    const accessTokenPromise = sut.auth({
+      email: "any_mail@mail.com",
+      password: "any_password",
+    });
+
+    await expect(accessTokenPromise).rejects.toThrow();
+  });
 });
