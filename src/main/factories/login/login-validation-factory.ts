@@ -1,4 +1,4 @@
-import { Validation } from "../../../presentation/controllers/login/login-protocols";
+import { Validation } from "../../../presentation/controllers/login/login-controller-protocols";
 import { ValidationComposite, EmailValidation, RequiredFieldValidation } from "../../../presentation/helpers/validators";
 import { EmailValidatorAdapter } from "../../../utils/email-validator-adapter";
 
