@@ -35,7 +35,7 @@ describe('Auth Routes', () => {
   });
 
   describe('POST /login', () => {
-    it('Should return 201 on signup success', async () => {
+    it('Should return 200 on login success', async () => {
       const hashedPassword = await hash("asdasdasd", 12)
       await accountCollection.insertOne({
         name: "Pedro Freitas",
