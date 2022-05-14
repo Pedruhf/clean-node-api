@@ -24,7 +24,7 @@ export class DbAuthentication implements Authentication {
     }
 
     const accessToken = await this.tokenGenerator.generate(account.id);
-    await this.updateAccessTokenRepository.update(account.id, accessToken);
+    await this.updateAccessTokenRepository.updateAccessToken(account.id, accessToken);
     return accessToken;
   }
 }
