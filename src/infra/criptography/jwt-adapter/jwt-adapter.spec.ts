@@ -16,4 +16,10 @@ describe('Jwt Adapter', () => {
     await sut.generate("any_id");
     expect(signSpy).toHaveBeenCalledWith({ id: "any_id" }, "secret");
   });
+  
+  it('Should return a token on sign success', async () => {
+    const sut = new JwtAdapter("secret");
+    const token = await sut.generate("any_id");
+    expect(token).toBe("any_token");
+  });
 });
