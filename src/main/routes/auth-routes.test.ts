@@ -1,6 +1,10 @@
 import request from "supertest";
-import { MongoHelper } from "../../infra/db/mongodb/helpers/mongo-helper";
 import app from "../config/app";
+import { Collection } from "mongodb";
+import { MongoHelper } from "../../infra/db/mongodb/helpers/mongo-helper";
+import { hash } from "bcrypt";
+
+let accountCollection: Collection;
 
 describe('Auth Routes', () => {
   beforeAll(async () => {
@@ -12,7 +16,7 @@ describe('Auth Routes', () => {
   });
 
   beforeEach(async () => {
-    const accountCollection = await MongoHelper.getCollection("accounts");
+    accountCollection = await MongoHelper.getCollection("accounts");
     await accountCollection.deleteMany({});
   });
   
@@ -27,6 +31,25 @@ describe('Auth Routes', () => {
           passwordConfirmation: "asdasdasd"
         })
         .expect(201);
+    });
+  });
+
+  describe('POST /login', () => {
+    it('Should return 201 on signup success', async () => {
+      const hashedPassword = await hash("asdasdasd", 12)
+      await accountCollection.insertOne({
+        name: "Pedro Freitas",
+        email: "pedrofreitas@gmail.com",
+        password: hashedPassword,
+      });
+
+      await request(app)
+        .post("/api/login")
+        .send({
+          email: "pedrofreitas@gmail.com",
+          password: "asdasdasd",
+        })
+        .expect(200);
     });
   });
 });
