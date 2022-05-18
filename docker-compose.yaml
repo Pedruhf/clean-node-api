@@ -4,11 +4,15 @@ services:
   api:
     container_name: clean_node_api
     build: .
-    entrypoint: "npm run start"
+    command: "npm run dev"
     ports:
       - 3000:3000
     volumes:
       - .:/home/node/api
+      - ./dist:/home/node/api/dist
+    restart: always
+    links:
+      - mongo
     depends_on:
       - mongo
 
@@ -19,3 +23,4 @@ services:
       - 27017:27017
     environment:
       - MONGO_URL=clean-node-api
+    restart: always

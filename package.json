@@ -19,7 +19,9 @@
     "typescript": "^4.6.4"
   },
   "scripts": {
-    "start": "sucrase-node src/main/server.ts",
+    "dev": "ts-node-dev --transpile-only --respawn --ignore node_modules src/main/server.ts",
+    "start": "sucrase-node dist/src/main/server.js",
+    "build": "rimraf dist && tsc",
     "test": "jest --passWithNoTests --runInBand --silent --noStackTrace",
     "test:verbose": "jest --passWithNoTests",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
