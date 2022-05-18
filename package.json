@@ -22,7 +22,7 @@
     "dev": "ts-node-dev --transpile-only --respawn --ignore node_modules src/main/server.ts",
     "start": "sucrase-node dist/src/main/server.js",
     "build": "rimraf dist && tsc",
-    "test": "jest --passWithNoTests --runInBand --silent --noStackTrace",
+    "test": "jest --passWithNoTests --runInBand --silent --noStackTrace --no-cache",
     "test:verbose": "jest --passWithNoTests",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
     "test:integration": "npm test -- --watch -c jest-integration-config.js",
