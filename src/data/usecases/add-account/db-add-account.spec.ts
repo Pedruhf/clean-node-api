@@ -1,4 +1,10 @@
-import { AccountModel, AddAccountModel, Encrypter, AddAccountRepository, LoadAccountByEmailRepository } from "./db-add-account-protocols";
+import {
+  AccountModel,
+  AddAccountModel,
+  Encrypter,
+  AddAccountRepository,
+  LoadAccountByEmailRepository
+} from "./db-add-account-protocols";
 import { DbAddAccount } from "./db-add-account";
 
 const makeFakeAccount = (): AccountModel => {
