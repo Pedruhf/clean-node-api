@@ -12,7 +12,7 @@ const makeFakeAccount = (): AccountModel => {
     email: "any_mail@mail.com",
     password: "hashed_password",
   };
-}
+};
 
 const makeUpdateAccessTokenRepositoryStub = (): UpdateAccessTokenRepository => {
   class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
@@ -22,7 +22,7 @@ const makeUpdateAccessTokenRepositoryStub = (): UpdateAccessTokenRepository => {
   }
   
   return new UpdateAccessTokenRepositoryStub();
-}
+};
 
 const makeTokenGeneratorStub = (): TokenGenerator => {
   class TokenGeneratorStub implements TokenGenerator {
@@ -32,7 +32,7 @@ const makeTokenGeneratorStub = (): TokenGenerator => {
   }
 
   return new TokenGeneratorStub();
-}
+};
 
 const makeHashComparerStub = (): HashComparer => {
   class HashComparerStub implements HashComparer {
@@ -42,7 +42,7 @@ const makeHashComparerStub = (): HashComparer => {
   }
 
   return new HashComparerStub();
-}
+};
 
 const makeLoadAccountByEmailRepositoryStub = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
@@ -53,7 +53,7 @@ const makeLoadAccountByEmailRepositoryStub = (): LoadAccountByEmailRepository =>
   }
 
   return new LoadAccountByEmailRepositoryStub;
-}
+};
 
 type SutTypes = {
   sut: DbAuthentication;
@@ -61,7 +61,7 @@ type SutTypes = {
   hashComparerStub: HashComparer;
   tokenGeneratorStub: TokenGenerator;
   updateAccessTokenRepositoryStub: UpdateAccessTokenRepository;
-}
+};
 
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepositoryStub();
@@ -82,7 +82,7 @@ const makeSut = (): SutTypes => {
     tokenGeneratorStub,
     updateAccessTokenRepositoryStub,
   };
-}
+};
 
 describe('DbAuthentication UseCase', () => {
   it('Should call LoadAccountByEmailRepository with correct email', async () => {
