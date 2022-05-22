@@ -1,3 +1,4 @@
+import { badRequest } from "../../../helpers/http/http-helper";
 import { AddSurveyController } from "./add-survery-controller";
 import { HttpRequest, Validation } from "./add-survey-protocols";
 
@@ -46,5 +47,15 @@ describe('AddSurvey Controller', () => {
 
     expect(validateSpy).toHaveBeenCalledTimes(1);
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body);
+  });
+
+  test('Should return 400 if Validation fails', async () => {
+    const { sut, validationStub } = makeSut();
+    jest.spyOn(validationStub, "validate").mockReturnValueOnce(new Error());
+    
+    const httpRequest = makeFakeRequest();
+    const httResponse = await sut.handle(httpRequest);
+
+    expect(httResponse).toEqual(badRequest(new Error));
   });
 });
