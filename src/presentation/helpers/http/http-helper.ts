@@ -11,7 +11,7 @@ export const ok = <T> (data: T): httpResponse => {
 export const created = <T> (data?: T): httpResponse => {
   return {
     statusCode: 201,
-    body: data || null,
+    body: data,
   };
 }
 
