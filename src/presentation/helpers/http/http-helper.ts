@@ -8,10 +8,10 @@ export const ok = <T> (data: T): httpResponse => {
   };
 }
 
-export const created = <T> (data: T): httpResponse => {
+export const created = <T> (data?: T): httpResponse => {
   return {
     statusCode: 201,
-    body: data,
+    body: data || null,
   };
 }
 
