@@ -12,6 +12,12 @@ const makeFakeAccount = (): AccountModel => ({
   password: "any_password",
 });
 
+const makeFakeRequest = (): HttpRequest => ({
+  headers: {
+    "x-access-token": "any_token"
+  }
+});
+
 const makeLoadAccountByToken = (): LoadAccountByToken => {
   class LoadAccountByTokenStub implements LoadAccountByToken {
     async load(AccessToken: string, role?: string): Promise<AccountModel> {
@@ -52,14 +58,21 @@ describe('Auth Middleware', () => {
     const { sut, loadAccountByTokenStub } = makeSut();
     
     const loadSpy = jest.spyOn(loadAccountByTokenStub, "load");
-    const httpRequest: HttpRequest = {
-      headers: {
-        "x-access-token": "any_token"
-      }
-    };
+    const httpRequest = makeFakeRequest();
     
     await sut.handle(httpRequest);
     expect(loadSpy).toHaveBeenCalledTimes(1);
     expect(loadSpy).toHaveBeenCalledWith("any_token");
+  });
+
+  test('Should return 403 if LoadAccountByToken returns null', async () => {
+    const { sut, loadAccountByTokenStub } = makeSut();
+    jest.spyOn(loadAccountByTokenStub, "load").mockReturnValueOnce(
+      new Promise(resolve => resolve(null))
+    );
+
+    const httpRequest = makeFakeRequest();
+    const httpResponse = await sut.handle(httpRequest);
+    expect(httpResponse).toEqual(forbidden(new AccessDeniedError()));
   });
 });
