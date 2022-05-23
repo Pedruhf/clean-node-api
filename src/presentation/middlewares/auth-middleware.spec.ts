@@ -5,12 +5,6 @@ import { forbidden } from "../helpers/http/http-helper";
 import { HttpRequest } from "../protocols";
 import { AuthMiddleware } from "./auth-middleware";
 
-class LoadAccountByTokenStub implements LoadAccountByToken {
-  async load(AccessToken: string, role?: string): Promise<AccountModel> {
-    return makeFakeAccount();
-  }
-}
-
 const makeFakeAccount = (): AccountModel => ({
   id: "any_id",
   name: "any_name",
@@ -18,13 +12,23 @@ const makeFakeAccount = (): AccountModel => ({
   password: "any_password",
 });
 
+const makeLoadAccountByToken = (): LoadAccountByToken => {
+  class LoadAccountByTokenStub implements LoadAccountByToken {
+    async load(AccessToken: string, role?: string): Promise<AccountModel> {
+      return makeFakeAccount();
+    }
+  }
+
+  return new LoadAccountByTokenStub();
+}
+
 type SutTypes = {
   sut: AuthMiddleware;
   loadAccountByTokenStub: LoadAccountByToken;
 };
 
 const makeSut = (): SutTypes => {
-  const loadAccountByTokenStub = new LoadAccountByTokenStub();
+  const loadAccountByTokenStub = makeLoadAccountByToken();
   const sut = new AuthMiddleware(loadAccountByTokenStub);
 
   return {
