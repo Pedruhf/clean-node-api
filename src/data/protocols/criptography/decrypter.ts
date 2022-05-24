@@ -1,3 +1,3 @@
 export interface Decrypter {
-  decrypt: (hasedValue: string) => Promise<string>;
+  decrypt: (hashedValue: string) => Promise<string>;
 }
