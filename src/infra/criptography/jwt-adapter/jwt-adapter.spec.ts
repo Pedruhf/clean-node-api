@@ -51,5 +51,15 @@ describe('Jwt Adapter', () => {
       expect(verifySpy).toHaveBeenCalledTimes(1);
       expect(verifySpy).toHaveBeenCalledWith("any_token", "secret");
     });
+
+    it('Should return null if verify returns null', async () => {
+      const sut = makeSut();
+      jest.spyOn(jwt, "verify").mockImplementation(
+        async () => new Promise(resolve => resolve(null))
+      );
+      
+      const value = await sut.decrypt("any_token");
+      expect(value).toBe(null);
+    });
   });
 });
