@@ -1,6 +1,6 @@
-import { Validation } from "../../../../presentation/controllers/auth/login/login-controller-protocols";
-import { ValidationComposite, EmailValidation, RequiredFieldValidation } from "../../../../validation/validators";
-import { EmailValidatorAdapter } from "../../../../infra/validators/email-validator-adapter";
+import { Validation } from "../../../../../presentation/controllers/auth/login/login-controller-protocols";
+import { ValidationComposite, EmailValidation, RequiredFieldValidation } from "../../../../../validation/validators";
+import { EmailValidatorAdapter } from "../../../../../infra/validators/email-validator-adapter";
 
 
 export const makeLoginValidation = (): ValidationComposite => {
