@@ -11,7 +11,11 @@ export class JwtAdapter implements TokenGenerator, Decrypter {
   }
 
   async decrypt (hashedValue: string): Promise<string> {
-    await jwt.verify(hashedValue, this.secret);
-    return null;
+    const value = await jwt.verify(hashedValue, this.secret) as string;
+    if (!value) {
+      return null;
+    }
+
+    return value;
   }
 }
